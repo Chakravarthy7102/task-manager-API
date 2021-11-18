@@ -1,17 +1,26 @@
+const Tasks = require("../models/tasksModel");
+
 //instead of writing the all code inside  same file,we're just spreding the work among diffrent files so that
 //our code is more maintainable and testable
 //this is a controller file where the all the middleware logics are present
-const getAllTasks = (req, res) => {
-  res.json({
-    name: "chakravarhty",
-    color: "brown-nigger",
-  });
+const getAllTasks = async (req, res) => {
+  try {
+    const tasks = await Tasks.find();
+    res.status(200).json(tasks);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 };
 
 //controller for posting the task
 
-const postTask = (req, res) => {
-  res.json(req.body);
+const postTask = async (req, res) => {
+  try {
+    const task = await Tasks.create(req.body);
+    res.status(201).json(task);
+  } catch (err) {
+    res.status(500).send(err);
+  }
 };
 
 //getting the task by its ID
