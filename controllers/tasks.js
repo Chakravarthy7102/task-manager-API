@@ -25,8 +25,16 @@ const postTask = async (req, res) => {
 
 //getting the task by its ID
 
-const getTasksById = (req, res) => {
-  res.send("getting the task by its id");
+const getTasksById = async (req, res) => {
+  try {
+    const task = await Tasks.findById(req.params.id).exec();
+    if (!task) {
+      return res.status(404).json({ msg: `id Not Found! ${req.params.id}` });
+    }
+    res.status(200).json(task);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 };
 
 //patch request to the server for updating a single id
@@ -37,8 +45,17 @@ const patchTasks = (req, res) => {
 
 //deleting the tasks when they are completed
 
-const deleteTasks = (req, res) => {
-  res.send("deleting the tasks when they are completed");
+const deleteTasks = async (req, res) => {
+  try {
+    const deleted = await Tasks.findOneAndDelete({ _id: req.params.id });
+    //if the mentioned id doest match in database
+    if (!deleted) {
+      return res.status(404).res(`Coudn't deal with id ${req.params.id}`);
+    }
+    res.status(200).send("Task Deleted!");
+  } catch (error) {
+    res.status(500).send("Task is not deleted");
+  }
 };
 
 module.exports = {
