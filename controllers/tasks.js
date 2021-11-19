@@ -37,12 +37,6 @@ const getTasksById = async (req, res) => {
   }
 };
 
-//patch request to the server for updating a single id
-
-const patchTasks = (req, res) => {
-  res.send("patch request to the server for updating a single id");
-};
-
 //deleting the tasks when they are completed
 
 const deleteTasks = async (req, res) => {
@@ -55,6 +49,25 @@ const deleteTasks = async (req, res) => {
     res.status(200).send("Task Deleted!");
   } catch (error) {
     res.status(500).send("Task is not deleted");
+  }
+};
+
+//patch request to the server for updating a single id
+
+const patchTasks = async (req, res) => {
+  try {
+    const { id: tasksId } = req.params;
+    const query = { _id: tasksId };
+    const task = await Tasks.findOneAndUpdate(query, req.body, {
+      runValidators: true,
+      new: true,
+    });
+    if (!task) {
+      return res.status(404).res(`Coudn't deal with id ${req.params.id}`);
+    }
+    res.status(200).json(task);
+  } catch (error) {
+    res.status(500).send(error);
   }
 };
 
